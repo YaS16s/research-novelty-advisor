@@ -1,0 +1,81 @@
+{
+  "meta": {
+    "title": "[SAMPLE] Attention module on a YOLO baseline for small-object detection",
+    "date": "2026-10-27",
+    "task": "small-object detection in aerial images",
+    "baseline": "[SAMPLE] YOLO-style detector",
+    "proposed_model": "[SAMPLE] YOLO + cross-scale attention",
+    "delta": "Adds a cross-scale attention module to the neck of the baseline detector.",
+    "keywords": ["small object detection", "aerial", "attention", "neck"],
+    "searches_run": 14,
+    "consensus_used": true
+  },
+  "papers": [
+    {"id": "P1", "title": "[SAMPLE] Example Paper A", "authors": "A. Author et al.", "year": 2025, "venue": "Example Venue", "url": "https://example.com/a", "source": "Consensus", "relation": "same-baseline", "problem": "Small objects lost in deep layers", "approach": "Adds a shallow detection head", "dataset": "Dataset X", "results": "+2.1 AP over baseline", "shortcomings": "Higher latency", "verified": true},
+    {"id": "P2", "title": "[SAMPLE] Example Paper B", "authors": "B. Author et al.", "year": 2024, "venue": "Example Journal", "url": "https://example.com/b", "source": "Both", "relation": "same-baseline", "problem": "Weak feature fusion across scales", "approach": "Attention-based neck", "dataset": "Dataset X", "results": "+3.0 AP over baseline", "shortcomings": "Not tested on night scenes", "verified": true},
+    {"id": "P3", "title": "[SAMPLE] Example Paper C", "authors": "C. Author et al.", "year": 2023, "venue": "arXiv", "url": "https://example.com/c", "source": "Google", "relation": "same-task", "problem": "Dense tiny objects", "approach": "Transformer encoder", "dataset": "Dataset Y", "results": "High accuracy", "shortcomings": "Heavy compute", "verified": true},
+    {"id": "P4", "title": "[SAMPLE] Example Paper D", "authors": "D. Author et al.", "year": 2025, "venue": "Example Conf.", "url": "https://example.com/d", "source": "Consensus", "relation": "same-task", "problem": "Label noise on tiny boxes", "approach": "Better box loss", "dataset": "Dataset Y", "results": "+1.4 AP", "shortcomings": "Needs tuning per dataset", "verified": false},
+    {"id": "P5", "title": "[SAMPLE] Example Paper E", "authors": "E. Author et al.", "year": 2022, "venue": "Example Conf.", "url": "https://example.com/e", "source": "Google", "relation": "adjacent", "problem": "Attention for medical image lesions", "approach": "Cross-scale attention", "dataset": "Medical set", "results": "Better recall", "shortcomings": "Different domain", "verified": true},
+    {"id": "P6", "title": "[SAMPLE] Example Paper F", "authors": "F. Author et al.", "year": 2026, "venue": "arXiv", "url": "https://example.com/f", "source": "Both", "relation": "same-task", "problem": "Real-time detection on edge devices", "approach": "Pruned lightweight detector", "dataset": "Dataset X", "results": "2x faster", "shortcomings": "Lower accuracy on tiny objects", "verified": true}
+  ],
+  "user_model": {
+    "label": "Your model",
+    "problem": "Small-object detection with low extra cost",
+    "approach": "Cross-scale attention in the neck",
+    "dataset": "Dataset X",
+    "results": "To be measured",
+    "shortcomings": "No comparison on a second dataset yet"
+  },
+  "landscape": {
+    "common_gaps": [
+      "Few papers report latency on edge hardware",
+      "Most results use a single dataset",
+      "Robustness to poor lighting is rarely tested"
+    ]
+  },
+  "novelty": {
+    "baseline_status": "Partially",
+    "baseline_evidence": "P1 and P2 improve small-object AP on Dataset X, but with extra latency or no low-light testing.",
+    "baseline_paper_ids": ["P1", "P2"],
+    "closest_matches": [
+      {"paper_id": "P2", "overlap": "High", "what_overlaps": "Attention in the neck of the same baseline", "what_differs": "Uses single-scale attention, not cross-scale"},
+      {"paper_id": "P5", "overlap": "Low", "what_overlaps": "Cross-scale attention idea", "what_differs": "Medical images, different task"}
+    ],
+    "verdict": "Incremental",
+    "verdict_reason": "A close match (P2) already puts attention in the neck. The cross-scale variant is not found in 14 searches across Consensus and Google, but check Google Scholar manually before claiming novelty."
+  },
+  "improvements": {
+    "mode": "both",
+    "changes": [
+      {"title": "Add a low-cost shallow head", "area": "architecture", "what": "Add a high-resolution detection head fed by the new attention features", "expected_benefit": "Better recall on tiny objects", "effort": "Medium", "evidence_ids": ["P1"]},
+      {"title": "Try a tiny-box-aware loss", "area": "loss", "what": "Swap the box loss for one designed for tiny objects", "expected_benefit": "Less localisation error on small boxes", "effort": "Low", "evidence_ids": ["P4"]},
+      {"title": "Test on a second dataset", "area": "evaluation", "what": "Run the same training recipe on another benchmark", "expected_benefit": "Shows generalisation", "effort": "Low", "evidence_ids": []}
+    ],
+    "directions": [
+      {"title": "Robustness to poor lighting", "why_open": "Common gap: most attention-neck papers skip low-light tests", "feasibility": "High", "evidence_ids": ["P2"]},
+      {"title": "Edge-device latency study", "why_open": "Few papers report latency next to accuracy", "feasibility": "Medium", "evidence_ids": ["P6"]}
+    ]
+  },
+  "toolkit": {
+    "skills": [
+      {"name": "Reproduce the baseline", "priority": 1, "why": "Every comparison depends on it"},
+      {"name": "Ablation design", "priority": 2, "why": "Proves each module matters"},
+      {"name": "Edge deployment basics", "priority": 3, "why": "Latency results strengthen the paper"}
+    ],
+    "datasets": [{"name": "Dataset X (from P1, P2)", "note": "Use the same split as the baseline papers"}],
+    "metrics": ["mAP@0.5", "mAP@0.5:0.95", "small-object AP", "FPS", "parameters"],
+    "tools": [{"name": "PyTorch + Ultralytics", "note": "Training and baseline reproduction"}, {"name": "Weights & Biases", "note": "Experiment tracking"}],
+    "checklist": [
+      "Reproduce the baseline and report your number next to the paper's",
+      "Ablate each new module separately",
+      "Run 3 seeds and report mean and spread",
+      "Report parameters, FLOPs and latency",
+      "Evaluate on a second dataset"
+    ]
+  },
+  "next_actions": [
+    "Reproduce the baseline on the same data split",
+    "Read P2 closely and write down exactly how cross-scale attention differs",
+    "Run the ablation: baseline, +attention, +attention+shallow head"
+  ]
+}
